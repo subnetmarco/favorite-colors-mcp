@@ -1,8 +1,6 @@
 name: CI
-
 on:
   pull_request:
-    branches: [ main, master ]
 
 jobs:
   test:
@@ -46,10 +44,10 @@ jobs:
       run: go tool cover -func=coverage.out
     
     - name: Build stdio version
-      run: go build -o favorite-colors-mcp-stdio
+      run: go build -o favorite-colors-mcp-stdio ./cmd/favorite-colors-mcp
     
     - name: Build HTTP version
-      run: go build -o favorite-colors-mcp-http
+      run: go build -o favorite-colors-mcp-http ./cmd/favorite-colors-mcp
     
     - name: Test stdio functionality
       run: |

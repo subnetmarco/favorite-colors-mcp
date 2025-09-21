@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "favorite-colors-mcp": {
-      "command": "/path/to/favorite-colors-mcp/favorite-colors-mcp",
-      "args": [],
-      "env": {}
-    }
-  }
-}

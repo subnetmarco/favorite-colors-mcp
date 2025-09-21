@@ -24,7 +24,7 @@ help:
 # Build the server
 build:
 	@echo "🏗️  Building favorite-colors-mcp..."
-	go build -o favorite-colors-mcp
+	go build -o favorite-colors-mcp ./cmd/favorite-colors-mcp
 
 # Run tests
 test:
@@ -43,11 +43,6 @@ bench:
 	@echo "🏃 Running benchmarks..."
 	go test -bench=. -run=^$$
 
-# Run full CI pipeline locally
-ci:
-	@echo "🚀 Running full CI pipeline..."
-	./ci-test.sh
-
 # Clean build artifacts
 clean:
 	@echo "🧹 Cleaning..."
@@ -56,13 +51,26 @@ clean:
 	rm -f favorite-colors-mcp-http
 	rm -f coverage.out
 	rm -f coverage.html
+	rm -rf certificates/
 	go clean
 
 # Development targets
 dev-stdio:
 	@echo "🔧 Starting stdio server..."
-	go run main.go
+	go run ./cmd/favorite-colors-mcp
 
 dev-http:
 	@echo "🌐 Starting HTTP server..."
-	go run main.go -transport=http
+	go run ./cmd/favorite-colors-mcp -transport=http
+
+dev-https:
+	@echo "🔐 Starting HTTPS server..."
+	@if [ ! -f certificates/server.crt ] || [ ! -f certificates/server.key ]; then \
+		echo "Generating self-signed certificate..."; \
+		./generate-cert.sh; \
+	fi
+	go run ./cmd/favorite-colors-mcp -transport=https -cert=certificates/server.crt -key=certificates/server.key
+
+cert:
+	@echo "🔐 Generating self-signed certificate..."
+	./generate-cert.sh

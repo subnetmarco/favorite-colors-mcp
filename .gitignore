@@ -1,0 +1,39 @@
+# Binaries
+favorite-colors-mcp
+favorite-colors-mcp-*
+
+# Test artifacts
+coverage.out
+coverage.html
+test_*.pem
+
+# Certificates (keep directory, ignore contents)
+certificates/*.crt
+certificates/*.key
+certificates/*.pem
+
+# Go build cache
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -6,13 +6,17 @@ A Model Context Protocol server for managing favorite colors, supporting both Cl
 
 ```bash
 # Build
-go build -o favorite-colors-mcp
+make build
 
 # For Claude Desktop
 ./favorite-colors-mcp
 
-# For MCP Inspector  
+# For MCP Inspector (HTTP)
 ./favorite-colors-mcp -transport=http
+
+# For MCP Inspector (HTTPS)
+make cert  # Generate certificates
+./favorite-colors-mcp -transport=https -cert=certificates/server.crt -key=certificates/server.key
 ```
 
 ## MCP Inspector Setup
@@ -47,10 +51,11 @@ go build -o favorite-colors-mcp
 ## Command Options
 
 ```bash
-./favorite-colors-mcp -help                    # Show help
-./favorite-colors-mcp                          # Stdio (Claude Desktop)
-./favorite-colors-mcp -transport=http          # HTTP (MCP Inspector)
-./favorite-colors-mcp -transport=http -port=:9000  # Custom port
+./favorite-colors-mcp -help                                    # Show help
+./favorite-colors-mcp                                          # Stdio (Claude Desktop)
+./favorite-colors-mcp -transport=http                         # HTTP (MCP Inspector)
+./favorite-colors-mcp -transport=https -cert=certificates/server.crt -key=certificates/server.key  # HTTPS
+./favorite-colors-mcp -transport=http -port=:9000             # Custom port
 ```
 
 ## Testing
@@ -76,6 +81,10 @@ curl -X POST http://localhost:8080/mcp \
 
 - Go 1.21+
 - Claude Desktop or MCP Inspector
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ---
 
