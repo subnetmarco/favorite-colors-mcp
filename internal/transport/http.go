@@ -156,7 +156,9 @@ func (ht *HTTPTransport) handleMCP(w http.ResponseWriter, r *http.Request) {
 				Data:    err.Error(),
 			},
 		}
-		json.NewEncoder(w).Encode(errorResp)
+		if err := json.NewEncoder(w).Encode(errorResp); err != nil {
+			log.Printf("Error encoding error response: %v", err)
+		}
 		return
 	}
 
@@ -191,7 +193,9 @@ func (ht *HTTPTransport) handleOAuthResource(w http.ResponseWriter, r *http.Requ
 		"scopes":   []string{"mcp:read", "mcp:write"},
 		"auth":     false, // No authentication required
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding OAuth response: %v", err)
+	}
 }
 
 // handleRoot handles the root endpoint
@@ -255,7 +259,9 @@ func (ht *HTTPTransport) handleRoot(w http.ResponseWriter, r *http.Request) {
 </html>`, strings.ToUpper(protocol), protocol, ht.port, strings.ToUpper(protocol))
 
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, html)
+	if _, err := fmt.Fprint(w, html); err != nil {
+		log.Printf("Error writing HTML response: %v", err)
+	}
 }
 
 // corsHandler adds CORS headers to HTTP responses

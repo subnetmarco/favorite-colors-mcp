@@ -206,7 +206,8 @@ func (s *Server) handleAddColor(req JSONRPCRequest, args map[string]interface{})
 		}
 	}
 
-	message, _ := s.storage.AddColor(color)
+	message, added := s.storage.AddColor(color)
+	_ = added // We don't need the boolean for MCP response
 
 	return JSONRPCResponse{
 		JSONRPC: "2.0",
@@ -254,7 +255,8 @@ func (s *Server) handleRemoveColor(req JSONRPCRequest, args map[string]interface
 		}
 	}
 
-	message, _ := s.storage.RemoveColor(color)
+	message, removed := s.storage.RemoveColor(color)
+	_ = removed // We don't need the boolean for MCP response
 
 	return JSONRPCResponse{
 		JSONRPC: "2.0",
@@ -272,7 +274,8 @@ func (s *Server) handleRemoveColor(req JSONRPCRequest, args map[string]interface
 
 // handleClearColors handles the clear_colors tool
 func (s *Server) handleClearColors(req JSONRPCRequest, args map[string]interface{}) JSONRPCResponse {
-	message, _ := s.storage.ClearColors()
+	message, count := s.storage.ClearColors()
+	_ = count // We don't need the count for MCP response
 
 	return JSONRPCResponse{
 		JSONRPC: "2.0",

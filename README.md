@@ -1,3 +1,5 @@
+[![CI](https://github.com/subnetmarco/favorite-colors-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/subnetmarco/favorite-colors-mcp/actions/workflows/ci.yml)
+
 # Favorite Colors MCP Server
 
 A Model Context Protocol server for managing favorite colors, supporting both Claude Desktop and MCP Inspector.

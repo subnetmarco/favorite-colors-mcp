@@ -94,7 +94,7 @@ func TestColorStorage_ClearColors(t *testing.T) {
 	cs := NewColorStorage()
 
 	// Test clearing empty storage
-	message, count := cs.ClearColors()
+	_, count := cs.ClearColors()
 	if count != 0 {
 		t.Errorf("Expected 0 cleared from empty storage, got %d", count)
 	}
@@ -104,7 +104,7 @@ func TestColorStorage_ClearColors(t *testing.T) {
 	cs.AddColor("blue")
 	cs.AddColor("green")
 
-	message, count = cs.ClearColors()
+	message, count := cs.ClearColors()
 	if count != 3 {
 		t.Errorf("Expected 3 colors cleared, got %d", count)
 	}
