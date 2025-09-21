@@ -14,9 +14,9 @@ linters:
     - errcheck
     - gosimple
     - typecheck
-    - deadcode
-    - varcheck
-    - structcheck
+    - unparam
+    - unconvert
+    - gocritic
 
 linters-settings:
   gofmt:

@@ -224,7 +224,7 @@ func (s *Server) handleAddColor(req JSONRPCRequest, args map[string]interface{})
 }
 
 // handleGetColors handles the get_colors tool
-func (s *Server) handleGetColors(req JSONRPCRequest, args map[string]interface{}) JSONRPCResponse {
+func (s *Server) handleGetColors(req JSONRPCRequest, _ map[string]interface{}) JSONRPCResponse {
 	_, text := s.storage.GetColors()
 
 	return JSONRPCResponse{
@@ -273,7 +273,7 @@ func (s *Server) handleRemoveColor(req JSONRPCRequest, args map[string]interface
 }
 
 // handleClearColors handles the clear_colors tool
-func (s *Server) handleClearColors(req JSONRPCRequest, args map[string]interface{}) JSONRPCResponse {
+func (s *Server) handleClearColors(req JSONRPCRequest, _ map[string]interface{}) JSONRPCResponse {
 	message, count := s.storage.ClearColors()
 	_ = count // We don't need the count for MCP response
 
