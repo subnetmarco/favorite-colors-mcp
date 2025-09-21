@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Verify dependencies
+      run: go mod verify
+    
+    - name: Run linting
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        args: --timeout=5m
+    
+    - name: Run tests
+      run: go test -v -race -coverprofile=coverage.out
+    
+    - name: Run benchmarks
+      run: go test -bench=. -run=^$
+    
+    - name: Check test coverage
+      run: go tool cover -func=coverage.out
+    
+    - name: Build stdio version
+      run: go build -o favorite-colors-mcp-stdio
+    
+    - name: Build HTTP version
+      run: go build -o favorite-colors-mcp-http
+    
+    - name: Test stdio functionality
+      run: |
+        echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"ci-test","version":"1.0.0"}}}' | timeout 5s ./favorite-colors-mcp-stdio || true
+    
+    - name: Test HTTP functionality
+      run: |
+        # Start HTTP server in background
+        ./favorite-colors-mcp-http -transport=http &
+        HTTP_PID=$!
+        sleep 2
+        
+        # Test HTTP endpoint
+        curl -f -X POST http://localhost:8080/mcp \
+          -H "Content-Type: application/json" \
+          -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","clientInfo":{"name":"ci-test","version":"1.0.0"}}}'
+        
+        # Test tools list
+        curl -f -X POST http://localhost:8080/mcp \
+          -H "Content-Type: application/json" \
+          -d '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'
+        
+        # Test add color
+        curl -f -X POST http://localhost:8080/mcp \
+          -H "Content-Type: application/json" \
+          -d '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"add_color","arguments":{"color":"ci-test-blue"}}}'
+        
+        # Cleanup
+        kill $HTTP_PID || true
+        wait $HTTP_PID 2>/dev/null || true
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: unittests
+        name: codecov-umbrella
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: binaries
+        path: |
+          favorite-colors-mcp-stdio
+          favorite-colors-mcp-http
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Run Gosec Security Scanner
+      uses: securecodewarrior/github-action-gosec@master
+      with:
+        args: './...'
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        args: --timeout=5m --verbose
+    
+    - name: Check formatting
+      run: |
+        if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+          echo "Code is not properly formatted:"
+          gofmt -s -l .
+          exit 1
+        fi
+    
+    - name: Check for unused dependencies
+      run: go mod tidy && git diff --exit-code go.mod go.sum
