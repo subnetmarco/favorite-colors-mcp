@@ -1,4 +1,7 @@
 [![CI](https://github.com/subnetmarco/favorite-colors-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/subnetmarco/favorite-colors-mcp/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/favorite-colors-mcp)](https://goreportcard.com/report/github.com/yourusername/favorite-colors-mcp)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://golang.org/)
 
 # Favorite Colors MCP Server
 
