@@ -62,8 +62,12 @@ func (ht *HTTPTransport) Run() error {
 	mux.HandleFunc("/.well-known/oauth-protected-resource", corsHandler(ht.handleOAuthResource))
 
 	httpServer := &http.Server{
-		Addr:    ht.port,
-		Handler: mux,
+		Addr:              ht.port,
+		Handler:           mux,
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	// Channel to listen for interrupt signal
